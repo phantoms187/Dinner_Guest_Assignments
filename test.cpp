@@ -4,47 +4,69 @@
 
 using namespace std;
 
+int table_likeness_score(int chairs, int **people, int assignment[])
+{
 
+  for(int i = 0; i < 2; ++i)
+  {
+    for(int j = 0; j < chairs; ++j)
+    {
 
-
-
+    }
+  }
+}
 
 
 
 int main()
 {
-  int total_people = 0;
+  int chairs = 0;
+  int ** people;
 
-  string line;
   ifstream myfile ("text.txt");
+
   if(myfile.is_open())
   {
-    myfile >> total_people;
-    int people[total_people][total_people];
+    myfile >> chairs;
 
-    for(int i = 0; i < total_people; ++i)
+    people = new int *[chairs];
+    for(int i = 0; i < chairs; ++i)
     {
-      for(int j = 0; j < total_people; ++j)
+        people[i] = new int [chairs];
+    }
+
+    for(int i = 0; i < chairs; ++i)
+    {
+      for(int j = 0; j < chairs; ++j)
       {
         myfile >> people[i][j];
-        cout << people[i][j] << " ";
-         if(j == total_people-1)
+        /*cout << people[i][j] << " ";
+         if(j == chairs-1)
            cout << "\n";
+        */
       }
 
     }
-    cout << "Person 1 likes person 2: " << people[0][1] << "\n";
-    cout << "Person 3 likes person 7: " << people[2][6] << "\n";
-
 
     myfile.close();
   }
 
   else cout << "Unable to open file";
 
-  cout << "\nTotal people: " << total_people << "\n";
+  cout << "\nPerson 3 likes Person 5 this much: " << people[2][4] << "\n";
 
+  cout << "\nTotal people: " << chairs << "\n";
 
+//Delete people dynamic matrix variable
+if(people)
+{
+  for(int i = 0; i < chairs; ++i)
+  {
+      delete[] people[i];
+  }
+  delete[] people;
+  people = 0;
+}
 
   return 0;
 
