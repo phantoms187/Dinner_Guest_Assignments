@@ -4,19 +4,14 @@
 
 using namespace std;
 
-
-
-
-
-
-
-
-int main()
+int main(int argc, char** argv)
 {
   int total_people = 0;
+  
+  cout << argv[1] <<"\n";
 
   string line;
-  ifstream myfile ("text.txt");
+  ifstream myfile (argv[1]);
   if(myfile.is_open())
   {
     myfile >> total_people;
