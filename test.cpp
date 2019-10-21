@@ -4,7 +4,6 @@
 
 using namespace std;
 
-<<<<<<< HEAD
 int table_likeness_score(int chairs, int **people, int assignment[])
 {
   int sum = 0;
@@ -43,16 +42,6 @@ int main(int argc, char** argv)
 
   ifstream myfile (argv[1]);
 
-=======
-int main(int argc, char** argv)
-{
-  int total_people = 0;
-  
-  cout << argv[1] <<"\n";
-
-  string line;
-  ifstream myfile (argv[1]);
->>>>>>> 10b5091fbf6a336c29dee7900a005168dba3abab
   if(myfile.is_open())
   {
     myfile >> chairs;
