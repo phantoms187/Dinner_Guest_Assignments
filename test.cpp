@@ -4,6 +4,15 @@
 
 using namespace std;
 
+
+int host_and_guest(int half_chairs, int chair1, int chair2)
+{
+  if(chair1 < half_chairs && chair2 >= half_chairs || chair1 >= half_chairs && chair2 < half_chairs)
+    return 1;
+  else
+    return 0;
+}
+
 int table_likeness_score(int chairs, int **people, int assignment[])
 {
   int sum = 0;
@@ -21,6 +30,9 @@ int table_likeness_score(int chairs, int **people, int assignment[])
 
       sum += people[assignment[current_chair]][assignment[current_chair+1]];
       sum += people[assignment[last_chair]][assignment[last_chair-1]];
+
+      if(host_and_guest(half_chairs, assignment[current_chair], assignment[current_chair + 1]))
+         sum += 1;
     }
   }
 //Add scores for people across from each other
@@ -30,6 +42,10 @@ int table_likeness_score(int chairs, int **people, int assignment[])
 
     sum += people[assignment[current_chair]][assignment[current_chair+half_chairs]];
     sum += people[assignment[current_chair+half_chairs]][assignment[current_chair]];
+
+    if(host_and_guest(half_chairs, assignment[current_chair], assignment[current_chair+half_chairs]))
+      sum += 2;
+
   }
 
   return sum;
@@ -73,7 +89,7 @@ int main(int argc, char** argv)
 
   int sum = table_likeness_score(chairs, people, assignment);
 
-  cout << "\nSum is: " << sum << "\n";
+  cout << "\nTotal People: " << chairs << "\nSum is: " << sum << "\n";
 
 //Delete people dynamic matrix variable
 if(people)
