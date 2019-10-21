@@ -87,6 +87,13 @@ int main(int argc, char** argv)
      assignment[i] = i;
   }
 
+  for(int i = 0; i < chairs/2; ++i)
+  {
+    if()
+  }
+
+
+
   int sum = table_likeness_score(chairs, people, assignment);
 
   cout << "\nTotal People: " << chairs << "\nSum is: " << sum << "\n";
