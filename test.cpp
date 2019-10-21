@@ -64,10 +64,6 @@ int main(int argc, char** argv)
   }
   else cout << "Unable to open file";
 
-  cout << "\nPerson 3 likes Person 5 this much: " << people[2][4] << "\n";
-
-  cout << "\nTotal people: " << chairs << "\n";
-
   int assignment[chairs];// = {0,5,1,6,2,7,3,8,4,9};
 
   for(int i = 0; i < chairs; ++i)
