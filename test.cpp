@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -80,6 +81,8 @@ int main(int argc, char** argv)
   }
   else cout << "Unable to open file";
 
+
+
   int assignment[chairs];// = {0,5,1,6,2,7,3,8,4,9};
 
   for(int i = 0; i < chairs; ++i)
@@ -87,10 +90,14 @@ int main(int argc, char** argv)
      assignment[i] = i;
   }
 
-  for(int i = 0; i < chairs/2; ++i)
+  unsigned seed = 10;
+  shuffle(assignment, assignment+chairs, default_random_engine(seed));
+  cout << "\nChairs now: ";
+  for(int i = 0; i < chairs; ++i)
   {
-    if()
+     cout << assignment[i] << ", ";
   }
+  cout << "\n";
 
 
 
