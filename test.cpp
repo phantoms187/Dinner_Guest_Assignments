@@ -26,6 +26,11 @@ bool comparePairs(Pair first, Pair second)
   return (first.score < second.score);
 }
 
+// bool still_need_seat(int assignment_pool[], int person)
+// {
+//   return assignment_pool.find(person) != assignment_pool.end();
+// }
+
 using namespace std;
 
 int table_likeness_score(int chairs, int **people, int assignment[])
@@ -96,20 +101,13 @@ int main(int argc, char** argv)
   }
   else cout << "Unable to open file";
 
+//Build set with all people coming to dinner
   for(int i = 0; i < chairs; ++i)
   {
     assignment_pool.insert(i);
   }
-  //
-  // cout << "Assignments: \n";
-  // set <int> :: iterator itr;
-  // cout << "\nThe set gquiz1 is : ";
-  //  for (itr = assignment_pool.begin(); itr != assignment_pool.end(); ++itr)
-  //  {
-  //      cout << '\t' << *itr;
-  //  }
-  //  cout << endl;
 
+//Add each possible pair with their net likeness score to vector like_Pairs
   for(int i = 0; i < chairs-1; ++i)
   {
     for(int j = i+1; j < chairs; ++j)
@@ -122,23 +120,55 @@ int main(int argc, char** argv)
     }
   }
 
+
   cout << "Pairs sorted by: \n";
    for (auto x : like_Pairs)
        cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
 
-cout << "\n-------------------------------------------------------------------------\n";
+  cout << "\n-------------------------------------------------------------------------\n";
   sort(like_Pairs.begin(), like_Pairs.end(), comparePairs);
 
   cout << "Pairs sorted by: \n";
-   for (auto x : like_Pairs)
+  for (auto x : like_Pairs)
        cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
 
 
-    int assignment[chairs] = {0,5,1,6,2,7,3,8,4,9};
+  int assignment[chairs] = {0,5,1,6,2,7,3,8,4,9};
 
-  // for(int i = 0; i < chairs; ++i)
+  vector<int> most_unliked;
+
+
+cout << endl;
+  for(int i = 0; i < chairs; ++i)
+  {
+      if(assignment_pool.find(like_Pairs[i].first) != assignment_pool.end())
+      {
+          most_unliked.push_back(like_Pairs[i].first);
+          assignment_pool.erase(like_Pairs[i].first);
+      }
+      if(assignment_pool.find(like_Pairs[i].second) != assignment_pool.end())
+      {
+        most_unliked.push_back(like_Pairs[i].second);
+        assignment_pool.erase(like_Pairs[i].second);
+      }
+  }
+
+  for(auto i : assignment_pool)
+ {
+   cout << i << " : ";
+ }
+ 
+cout << endl;
+   for(auto i : most_unliked)
+  {
+    cout << i << ", ";
+  }
+
+
+
+  // for(int i = 0; i < chairs; i+=2)
   // {
-  //    assignment[i] = i;
+  //   assignment[i] = like_Pairs[]
   // }
 
 
