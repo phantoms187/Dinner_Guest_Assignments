@@ -1,10 +1,28 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <bits/stdc++.h>
+#include <set>
+#include <iterator>
+
+
+struct Pair{
+  int first, second, score;
+};
+
+int mutual_likeness(int** people, int first, int second)
+{
+  return people[first][second] + people[second][first];
+}
+
+bool comparePairs(Pair first, Pair second)
+{
+  return (first.score < second.score);
+}
 
 using namespace std;
 
-<<<<<<< HEAD
 int table_likeness_score(int chairs, int **people, int assignment[])
 {
   int sum = 0;
@@ -40,19 +58,12 @@ int main(int argc, char** argv)
 {
   int chairs = 0;
   int ** people;
+  vector<Pair> like_Pairs;
+  set<int> assignment_pool;
+
 
   ifstream myfile (argv[1]);
 
-=======
-int main(int argc, char** argv)
-{
-  int total_people = 0;
-  
-  cout << argv[1] <<"\n";
-
-  string line;
-  ifstream myfile (argv[1]);
->>>>>>> 10b5091fbf6a336c29dee7900a005168dba3abab
   if(myfile.is_open())
   {
     myfile >> chairs;
@@ -75,16 +86,51 @@ int main(int argc, char** argv)
   }
   else cout << "Unable to open file";
 
-  cout << "\nPerson 3 likes Person 5 this much: " << people[2][4] << "\n";
-
-  cout << "\nTotal people: " << chairs << "\n";
-
-  int assignment[chairs];// = {0,5,1,6,2,7,3,8,4,9};
-
   for(int i = 0; i < chairs; ++i)
   {
-     assignment[i] = i;
+    assignment_pool.insert(i);
   }
+
+  cout << "Assignments: \n";
+  set <int> :: iterator itr;
+  cout << "\nThe set gquiz1 is : ";
+   for (itr = assignment_pool.begin(); itr != assignment_pool.end(); ++itr)
+   {
+       cout << '\t' << *itr;
+   }
+   cout << endl;
+
+  for(int i = 0; i < chairs-1; ++i)
+  {
+    for(int j = i+1; j < chairs; ++j)
+    {
+      Pair current;
+      current.first = i;
+      current.second = j;
+      current.score = mutual_likeness(people, i, j);
+      like_Pairs.push_back(current);
+    }
+  }
+
+  cout << "Pairs sorted by: \n";
+   for (auto x : like_Pairs)
+       cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
+
+cout << "\n-------------------------------------------------------------------------\n";
+  sort(like_Pairs.begin(), like_Pairs.end(), comparePairs);
+
+  cout << "Pairs sorted by: \n";
+   for (auto x : like_Pairs)
+       cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
+
+
+    int assignment[chairs] = {0,5,1,6,2,7,3,8,4,9};
+
+  // for(int i = 0; i < chairs; ++i)
+  // {
+  //    assignment[i] = i;
+  // }
+
 
   int sum = table_likeness_score(chairs, people, assignment);
 
