@@ -90,15 +90,15 @@ int main(int argc, char** argv)
   {
     assignment_pool.insert(i);
   }
-
-  cout << "Assignments: \n";
-  set <int> :: iterator itr;
-  cout << "\nThe set gquiz1 is : ";
-   for (itr = assignment_pool.begin(); itr != assignment_pool.end(); ++itr)
-   {
-       cout << '\t' << *itr;
-   }
-   cout << endl;
+  //
+  // cout << "Assignments: \n";
+  // set <int> :: iterator itr;
+  // cout << "\nThe set gquiz1 is : ";
+  //  for (itr = assignment_pool.begin(); itr != assignment_pool.end(); ++itr)
+  //  {
+  //      cout << '\t' << *itr;
+  //  }
+  //  cout << endl;
 
   for(int i = 0; i < chairs-1; ++i)
   {
