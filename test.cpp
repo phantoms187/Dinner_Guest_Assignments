@@ -11,6 +11,11 @@ struct Pair{
   int first, second, score;
 };
 
+bool host_and_guest(int half_chairs, int chair1, int chair2)
+{
+  return (chair1 < half_chairs && chair2 >= half_chairs || chair1 >= half_chairs && chair2 < half_chairs);
+}
+
 int mutual_likeness(int** people, int first, int second)
 {
   return people[first][second] + people[second][first];
@@ -40,6 +45,9 @@ int table_likeness_score(int chairs, int **people, int assignment[])
 
       sum += people[assignment[current_chair]][assignment[current_chair+1]];
       sum += people[assignment[last_chair]][assignment[last_chair-1]];
+
+      if(host_and_guest(half_chairs, assignment[current_chair], assignment[current_chair + 1]))
+         sum += 1;
     }
   }
 //Add scores for people across from each other
@@ -50,6 +58,8 @@ int table_likeness_score(int chairs, int **people, int assignment[])
     sum += people[assignment[current_chair]][assignment[current_chair+half_chairs]];
     sum += people[assignment[current_chair+half_chairs]][assignment[current_chair]];
   }
+  if(host_and_guest(half_chairs, assignment[current_chair], assignment[current_chair+half_chairs]))
+     sum += 2;
 
   return sum;
 }
