@@ -80,15 +80,15 @@ int findPermutations(vector<int> most_liked, vector<int> most_unliked, int assig
     // Find all possible permutations
     cout << "Possible permutations are:\n";
     do {
-        for(int i = 0; i < chairs/2; ++i)
+        for(int i = 0; i < chairs; ++i)
         {
-          assignment[2*i] = most_liked[i];
-          assignment[2*i+1] = most_unliked[i];
+          assignment[i] = most_liked[i];
+          //assignment[2*i+1] = most_unliked[i];
         }
         if(table_likeness_score(chairs, people, assignment) > total)
           total = table_likeness_score(chairs, people, assignment);
-        cout << total << ": ";
-        display(most_liked);
+      //  cout << total << ": ";
+      //  display(most_liked);
     } while (next_permutation(most_liked.begin(), most_liked.end()));
 
     return total;
@@ -182,7 +182,9 @@ int main(int argc, char** argv)
   }
 
 
-  for(auto i : assignment_pool)
+  //for(auto i : assignment_pool)
+
+  for(int i = 0; i < chairs; ++i)
   {
     most_liked.push_back(i);
   }
