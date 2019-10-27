@@ -71,9 +71,16 @@ int table_likeness_score(int chairs, int **people, int assignment[])
 
 int main(int argc, char** argv)
 {
-  int chairs = 0;
+  int chairs, sum = 0;
+  int most_unliked_count = 0;
+
   int ** people;
   vector<Pair> like_Pairs;
+  vector<int> most_unliked;
+  vector<int> most_liked;
+
+
+
   set<int> assignment_pool;
 
 
@@ -101,6 +108,8 @@ int main(int argc, char** argv)
   }
   else cout << "Unable to open file";
 
+  int assignment[chairs] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
+
 //Build set with all people coming to dinner
   for(int i = 0; i < chairs; ++i)
   {
@@ -120,59 +129,65 @@ int main(int argc, char** argv)
     }
   }
 
-
-  cout << "Pairs sorted by: \n";
-   for (auto x : like_Pairs)
-       cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
-
-  cout << "\n-------------------------------------------------------------------------\n";
+//Sort pairs by likeness net score from worst to best
   sort(like_Pairs.begin(), like_Pairs.end(), comparePairs);
 
-  cout << "Pairs sorted by: \n";
-  for (auto x : like_Pairs)
-       cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
-
-
-  int assignment[chairs] = {0,5,1,6,2,7,3,8,4,9};
-
-  vector<int> most_unliked;
-
-
-cout << endl;
+//Determine most unliked people from worst pairs and store in vector
   for(int i = 0; i < chairs; ++i)
   {
       if(assignment_pool.find(like_Pairs[i].first) != assignment_pool.end())
       {
-          most_unliked.push_back(like_Pairs[i].first);
-          assignment_pool.erase(like_Pairs[i].first);
+        most_unliked.push_back(like_Pairs[i].first);
+        ++most_unliked_count;
+        assignment_pool.erase(like_Pairs[i].first);
+        if(most_unliked_count >= chairs/2)
+          break;
       }
       if(assignment_pool.find(like_Pairs[i].second) != assignment_pool.end())
       {
         most_unliked.push_back(like_Pairs[i].second);
+        ++most_unliked_count;
         assignment_pool.erase(like_Pairs[i].second);
+        if(most_unliked_count >= chairs/2)
+          break;
       }
+
   }
 
+
   for(auto i : assignment_pool)
- {
-   cout << i << " : ";
- }
- 
-cout << endl;
-   for(auto i : most_unliked)
+  {
+    most_liked.push_back(i);
+  }
+
+  cout << endl << "most_unliked: " << endl;
+  for(auto i : most_unliked)
+  {
+    cout << i << ", ";
+  }
+  cout << endl << "most_liked: " << endl;
+  for(auto i : most_liked)
   {
     cout << i << ", ";
   }
 
+  for(int i = 0; i < chairs/2; ++i)
+  {
+    assignment[2*i] = most_liked[i];
+    assignment[2*i+1] = most_unliked[i];
+  }
+  cout << endl;
+  cout << "chairs: " << endl;
+  for(int i = 0; i < chairs; ++i)
+  {
+    cout << assignment[i] << ", ";
+  }
+  cout << endl;
 
 
-  // for(int i = 0; i < chairs; i+=2)
-  // {
-  //   assignment[i] = like_Pairs[]
-  // }
+  //for(int i < chairs/2; ++i)
 
-
-  int sum = table_likeness_score(chairs, people, assignment);
+  sum = table_likeness_score(chairs, people, assignment);
 
   cout << "\nSum is: " << sum << "\n";
 
