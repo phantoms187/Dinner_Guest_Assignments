@@ -6,6 +6,7 @@
 #include <set>
 #include <iterator>
 
+using namespace std;
 
 struct Pair{
   int first, second, score;
@@ -25,13 +26,6 @@ bool comparePairs(Pair first, Pair second)
 {
   return (first.score < second.score);
 }
-
-// bool still_need_seat(int assignment_pool[], int person)
-// {
-//   return assignment_pool.find(person) != assignment_pool.end();
-// }
-
-using namespace std;
 
 int table_likeness_score(int chairs, int **people, int assignment[])
 {
@@ -69,6 +63,41 @@ int table_likeness_score(int chairs, int **people, int assignment[])
   return sum;
 }
 
+void display(vector<int> a)
+{
+    for (auto i : a) {
+        cout << i << "  ";
+    }
+    cout << endl;
+}
+//Found on geeksforgeeks.org
+int findPermutations(vector<int> most_liked, vector<int> most_unliked, int assignment[], int chairs, int **people)
+{
+    int total = 0;
+    // Sort the given array
+    sort(most_liked.begin(), most_liked.end());
+
+    // Find all possible permutations
+    cout << "Possible permutations are:\n";
+    do {
+        for(int i = 0; i < chairs/2; ++i)
+        {
+          assignment[2*i] = most_liked[i];
+          assignment[2*i+1] = most_unliked[i];
+        }
+        if(table_likeness_score(chairs, people, assignment) > total)
+          total = table_likeness_score(chairs, people, assignment);
+        cout << total << ": ";
+        display(most_liked);
+    } while (next_permutation(most_liked.begin(), most_liked.end()));
+
+    return total;
+}
+
+
+
+
+
 int main(int argc, char** argv)
 {
   int chairs, sum = 0;
@@ -78,8 +107,6 @@ int main(int argc, char** argv)
   vector<Pair> like_Pairs;
   vector<int> most_unliked;
   vector<int> most_liked;
-
-
 
   set<int> assignment_pool;
 
@@ -165,29 +192,31 @@ int main(int argc, char** argv)
   {
     cout << i << ", ";
   }
+
   cout << endl << "most_liked: " << endl;
   for(auto i : most_liked)
   {
     cout << i << ", ";
   }
 
-  for(int i = 0; i < chairs/2; ++i)
-  {
-    assignment[2*i] = most_liked[i];
-    assignment[2*i+1] = most_unliked[i];
-  }
-  cout << endl;
-  cout << "chairs: " << endl;
-  for(int i = 0; i < chairs; ++i)
-  {
-    cout << assignment[i] << ", ";
-  }
-  cout << endl;
+  // for(int i = 0; i < chairs/2; ++i)
+  // {
+  //   assignment[2*i] = most_liked[i];
+  //   assignment[2*i+1] = most_unliked[i];
+  // }
+  // cout << endl;
+  // cout << "chairs: " << endl;
+  // for(int i = 0; i < chairs; ++i)
+  // {
+  //   cout << assignment[i] << ", ";
+  // }
+  // cout << endl;
+
+  //int size = most_liked.size();//end() - most_liked;
+  sum = findPermutations(most_liked, most_unliked, assignment, chairs, people);
 
 
-  //for(int i < chairs/2; ++i)
-
-  sum = table_likeness_score(chairs, people, assignment);
+  //sum = table_likeness_score(chairs, people, assignment);
 
   cout << "\nSum is: " << sum << "\n";
 
