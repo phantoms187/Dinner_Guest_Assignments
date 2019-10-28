@@ -169,7 +169,7 @@ int main(int argc, char** argv)
   sort(like_Pairs.begin(), like_Pairs.end(), comparePairs);
 
 //Determine most unliked people from worst pairs and store in vector
-  for(int i = (like_Pairs.size()); i >= 0; --i)
+  for(int i = 0; i < like_Pairs.size(); ++i)
   {
       if(assignment_pool.find(like_Pairs[i].first) != assignment_pool.end())
       {
