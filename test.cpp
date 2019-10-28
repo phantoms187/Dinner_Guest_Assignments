@@ -5,6 +5,8 @@
 #include <bits/stdc++.h>
 #include <set>
 #include <iterator>
+#include <algorithm>
+#include <random>
 
 using namespace std;
 
@@ -17,14 +19,19 @@ bool host_and_guest(int half_chairs, int chair1, int chair2)
   return (chair1 < half_chairs && chair2 >= half_chairs || chair1 >= half_chairs && chair2 < half_chairs);
 }
 
-int mutual_likeness(int** people, int first, int second)
+int mutual_likeness(int** people, int first, int second, int chairs)
 {
-  return people[first][second] + people[second][first];
+  int total = 0;
+  if(host_and_guest(chairs/2,first, second))
+    ++total;
+  total += (people[first][second] + people[second][first]);
+
+  return total;
 }
 
 bool comparePairs(Pair first, Pair second)
 {
-  return (first.score < second.score);
+  return (first.score > second.score);
 }
 
 int table_likeness_score(int chairs, int **people, int assignment[])
@@ -74,38 +81,58 @@ void display(vector<int> a)
 //Found on geeksforgeeks.org
 int findPermutations(vector<int> most_liked, vector<int> most_unliked, int assignment[], int temp[], int chairs, int **people)
 {
-    int total, max = 0;
-
+    int sum = 0;
+    int max = -1000;
     // Sort the given array
-    sort(most_liked.begin(), most_liked.end());
+    //sort(most_liked.begin(), most_liked.end());
+//From stackoverflow to generate time based seed
+      unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+      default_random_engine liked_seed(seed);
+      ++seed;
+      default_random_engine unlike_seed(seed);
+      for(int i = 0; i < 10000000; ++i)
+      {
+        //srand(unsigned(time(0)));
 
-    // Find all possible permutations
-    cout << "Possible permutations are:\n";
-    do {
+        shuffle(most_liked.begin(), most_liked.end(), liked_seed);
+        //shuffle(most_unliked.begin(), most_unliked.end(), unlike_seed);
         for(int i = 0; i < chairs/2; ++i)
         {
           assignment[2*i] = most_liked[i];
           assignment[2*i+1] = most_unliked[i];
         }
-        total = table_likeness_score(chairs, people, assignment);
-        if(total > max)
-        {
-            max = total;
-            for(int j = 0; j < chairs; ++j)
-            {
-              temp[j] = assignment[j];
-            }
-        }
-        //cout << total << ": ";
-        //display(most_liked);
-    } while (next_permutation(most_liked.begin(), most_liked.end()));
+
+        sum = table_likeness_score(chairs, people, assignment);
+
+        if(sum > max)
+          max = sum;
+
+      }
+
+
+
+
+    //
+    //       for(int i = 0; i < chairs/2; ++i)
+    //     {
+    //       assignment[2*i] = most_liked[i];
+    //       assignment[2*i+1] = most_unliked[i];
+    //     }
+    //     //total = table_likeness_score(chairs, people, assignment);
+    //     if(total > max)
+    //     {
+    //         max = total;
+    //         for(int j = 0; j < chairs; ++j)
+    //         {
+    //           temp[j] = assignment[j];
+    //         }
+    //     }
+    //     //cout << total << ": ";
+    //     //display(most_liked);
+    // }
 
     return max;
 }
-
-
-
-
 
 int main(int argc, char** argv)
 {
@@ -160,7 +187,7 @@ int main(int argc, char** argv)
       Pair current;
       current.first = i;
       current.second = j;
-      current.score = mutual_likeness(people, i, j);
+      current.score = mutual_likeness(people, i, j, chairs);
       like_Pairs.push_back(current);
     }
   }
@@ -168,8 +195,12 @@ int main(int argc, char** argv)
 //Sort pairs by likeness net score from worst to best
   sort(like_Pairs.begin(), like_Pairs.end(), comparePairs);
 
+  cout << "Pairs sorted by: \n";
+   for (auto x : like_Pairs)
+       cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
+
 //Determine most unliked people from worst pairs and store in vector
-  for(int i = 0; i < like_Pairs.size(); ++i)
+  for(int i = (like_Pairs.size()); i >= 0; --i)
   {
       if(assignment_pool.find(like_Pairs[i].first) != assignment_pool.end())
       {
@@ -191,9 +222,9 @@ int main(int argc, char** argv)
   }
 
 
-  for(auto i : assignment_pool)
+   for(auto i : assignment_pool)
 
-  //for(int i = 0; i < chairs; ++i)
+  // for(int i = 0; i < chairs; ++i)
   {
     most_liked.push_back(i);
   }
@@ -210,12 +241,12 @@ int main(int argc, char** argv)
     cout << i << ", ";
   }
 
-  // for(int i = 0; i < chairs/2; ++i)
-  // {
-  //   assignment[2*i] = most_liked[i];
-  //   assignment[2*i+1] = most_unliked[i];
-  // }
-  // cout << endl;
+  for(int i = 0; i < chairs/2; ++i)
+  {
+    assignment[2*i] = most_liked[i];
+    assignment[2*i+1] = most_unliked[i];
+  }
+  cout << endl;
   // cout << "chairs: " << endl;
   // for(int i = 0; i < chairs; ++i)
   // {
@@ -226,20 +257,33 @@ int main(int argc, char** argv)
   //int size = most_liked.size();//end() - most_liked;
   int temp[chairs];
   sum = findPermutations(most_liked, most_unliked, assignment, temp, chairs, people);
-
-
-  //sum = table_likeness_score(chairs, people, assignment);
+  //int max = -10000;
+//From stackoverflow to generate time based seed
+  // unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+  // default_random_engine e(seed);
+  // for(int i = 0; i < 10000000; ++i)
+  // {
+  //   //srand(unsigned(time(0)));
+  //
+  //   shuffle(most_liked.begin(), most_liked.end(), e);
+  //
+  //   sum = table_likeness_score(chairs, people, most_liked);
+  //
+  //   if(sum > max)
+  //     max = sum;
+  //
+  // }
 
   cout << "\nScore is: " << sum << "\n";
 
-  for(int i = 0; i < chairs; ++i)
-  {
-    cout << "Person " << temp[i]+1 << "  is sitting in seat: " << i + 1 << endl;
-  }
+  // for(int i = 0; i < chairs; ++i)
+  // {
+  //   cout << "Person " << temp[i]+1 << "  is sitting in seat: " << i + 1 << endl;
+  // }
 
-  sum = table_likeness_score(chairs, people, temp);
+  // sum = table_likeness_score(chairs, people, temp);
+  //
 
-    cout << "\nScore is: " << sum << "\n";
 
 //Delete people dynamic matrix variable
 if(people)
