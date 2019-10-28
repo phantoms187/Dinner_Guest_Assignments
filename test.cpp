@@ -39,6 +39,7 @@ int table_likeness_score(int chairs, int **people, int assignment[])
   {
     for(int j = 0; j < half_chairs-1; ++j)
     {
+
       current_chair = (half_chairs*i)+j;
       last_chair = (half_chairs*(i+1)-(j+1));
 
@@ -71,27 +72,35 @@ void display(vector<int> a)
     cout << endl;
 }
 //Found on geeksforgeeks.org
-int findPermutations(vector<int> most_liked, vector<int> most_unliked, int assignment[], int chairs, int **people)
+int findPermutations(vector<int> most_liked, vector<int> most_unliked, int assignment[], int temp[], int chairs, int **people)
 {
-    int total = 0;
+    int total, max = 0;
+
     // Sort the given array
     sort(most_liked.begin(), most_liked.end());
 
     // Find all possible permutations
     cout << "Possible permutations are:\n";
     do {
-        for(int i = 0; i < chairs; ++i)
+        for(int i = 0; i < chairs/2; ++i)
         {
-          assignment[i] = most_liked[i];
-          //assignment[2*i+1] = most_unliked[i];
+          assignment[2*i] = most_liked[i];
+          assignment[2*i+1] = most_unliked[i];
         }
-        if(table_likeness_score(chairs, people, assignment) > total)
-          total = table_likeness_score(chairs, people, assignment);
-      //  cout << total << ": ";
-      //  display(most_liked);
+        total = table_likeness_score(chairs, people, assignment);
+        if(total > max)
+        {
+            max = total;
+            for(int j = 0; j < chairs; ++j)
+            {
+              temp[j] = assignment[j];
+            }
+        }
+        //cout << total << ": ";
+        //display(most_liked);
     } while (next_permutation(most_liked.begin(), most_liked.end()));
 
-    return total;
+    return max;
 }
 
 
@@ -160,7 +169,7 @@ int main(int argc, char** argv)
   sort(like_Pairs.begin(), like_Pairs.end(), comparePairs);
 
 //Determine most unliked people from worst pairs and store in vector
-  for(int i = 0; i < chairs; ++i)
+  for(int i = (like_Pairs.size()); i >= 0; --i)
   {
       if(assignment_pool.find(like_Pairs[i].first) != assignment_pool.end())
       {
@@ -182,9 +191,9 @@ int main(int argc, char** argv)
   }
 
 
-  //for(auto i : assignment_pool)
+  for(auto i : assignment_pool)
 
-  for(int i = 0; i < chairs; ++i)
+  //for(int i = 0; i < chairs; ++i)
   {
     most_liked.push_back(i);
   }
@@ -215,12 +224,22 @@ int main(int argc, char** argv)
   // cout << endl;
 
   //int size = most_liked.size();//end() - most_liked;
-  sum = findPermutations(most_liked, most_unliked, assignment, chairs, people);
+  int temp[chairs];
+  sum = findPermutations(most_liked, most_unliked, assignment, temp, chairs, people);
 
 
   //sum = table_likeness_score(chairs, people, assignment);
 
-  cout << "\nSum is: " << sum << "\n";
+  cout << "\nScore is: " << sum << "\n";
+
+  for(int i = 0; i < chairs; ++i)
+  {
+    cout << "Person " << temp[i]+1 << "  is sitting in seat: " << i + 1 << endl;
+  }
+
+  sum = table_likeness_score(chairs, people, temp);
+
+    cout << "\nScore is: " << sum << "\n";
 
 //Delete people dynamic matrix variable
 if(people)
