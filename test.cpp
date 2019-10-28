@@ -134,10 +134,16 @@ int findPermutations(vector<int> most_liked, vector<int> most_unliked, int assig
     return max;
 }
 
+// void setBestAssignment(int assignment[]; int chairs, vector<Pair> like_pairs)
+// {
+//   for(int i = 0; )
+// }
+
 int main(int argc, char** argv)
 {
   int chairs, sum = 0;
   int most_unliked_count = 0;
+  int max = -10000;
 
   int ** people;
   vector<Pair> like_Pairs;
@@ -171,7 +177,11 @@ int main(int argc, char** argv)
   }
   else cout << "Unable to open file";
 
-  int assignment[chairs] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
+  int assignment[chairs];
+  for(int i = 0; i < chairs; ++i)
+  {
+    assignment[i] = -1;
+  }
 
 //Build set with all people coming to dinner
   for(int i = 0; i < chairs; ++i)
@@ -192,60 +202,104 @@ int main(int argc, char** argv)
     }
   }
 
-//Sort pairs by likeness net score from worst to best
+//Sort pairs by likeness net score from best to worst
   sort(like_Pairs.begin(), like_Pairs.end(), comparePairs);
 
-  cout << "Pairs sorted by: \n";
-   for (auto x : like_Pairs)
-       cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
+  // cout << "Pairs sorted by: \n";
+  //  for (auto x : like_Pairs)
+  //      cout << "[" << x.first << ", " << x.second << ", " << x.score << "] " << endl;
 
-//Determine most unliked people from worst pairs and store in vector
-  for(int i = (like_Pairs.size()); i >= 0; --i)
+
+cout << endl << "most_unliked: " << endl;
+for(int i = 0; i < chairs; ++i)
+{
+  cout << assignment[i] << ", ";
+}
+
+assignment[0] = (like_Pairs[0].first);
+assignment_pool.erase(like_Pairs[0].first);
+assignment[(chairs/2)] = (like_Pairs[0].second);
+assignment_pool.erase(like_Pairs[0].second);
+
+int j = like_Pairs.size();
+
+    while(!(assignment_pool.find(like_Pairs[j-1].first) != assignment_pool.end() &&
+            assignment_pool.find(like_Pairs[j-1].second) != assignment_pool.end()))
+    {
+      --j;
+    }
+    assignment[2] = (like_Pairs[j-1].first);
+    assignment_pool.erase(like_Pairs[j-1].first);
+    assignment[3+(chairs/2)] = (like_Pairs[j-1].second);
+    assignment_pool.erase(like_Pairs[j-1].second);
+
+    cout << endl << "most_unliked: " << endl;
+    for(int i = 0; i < chairs; ++i)
+    {
+      cout << assignment[i] << ", ";
+    }
+
+//
+for(auto i : assignment_pool)
+// for(int i = 0; i < chairs; ++i)
+{
+  most_liked.push_back(i);
+}
+
+
+unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+default_random_engine liked_seed(seed);
+int temp[chairs];
+for(int i = 0; i < chairs; ++i)
+{
+  temp[i] = assignment[i];
+}
+
+for(int k = 0; k < 10000; ++k)
+{
+  j=0;
+  shuffle(most_liked.begin(), most_liked.end(), liked_seed);
+
+  for(int i = 1; i < chairs; ++i)
   {
-      if(assignment_pool.find(like_Pairs[i].first) != assignment_pool.end())
-      {
-        most_unliked.push_back(like_Pairs[i].first);
-        ++most_unliked_count;
-        assignment_pool.erase(like_Pairs[i].first);
-        if(most_unliked_count >= chairs/2)
-          break;
-      }
-      if(assignment_pool.find(like_Pairs[i].second) != assignment_pool.end())
-      {
-        most_unliked.push_back(like_Pairs[i].second);
-        ++most_unliked_count;
-        assignment_pool.erase(like_Pairs[i].second);
-        if(most_unliked_count >= chairs/2)
-          break;
-      }
-
+    if(temp[i] == -1)
+    {
+      assignment[i] = most_liked[j];
+    //  assignment_pool.erase(most_liked[j]);
+      ++j;
+    }
   }
+  
+  sum = table_likeness_score(chairs, people, assignment);
+
+  if(sum > max)
+    max = sum;
+}
+
+// cout << endl << "most_unliked: " << endl;
+// for(int i = 0; i < chairs; ++i)
+// {
+//   cout << assignment[i] << ", ";
+// }
 
 
-   for(auto i : assignment_pool)
-
+  //
+  // cout << endl << "most_unliked: " << endl;
   // for(int i = 0; i < chairs; ++i)
-  {
-    most_liked.push_back(i);
-  }
-
-  cout << endl << "most_unliked: " << endl;
-  for(auto i : most_unliked)
-  {
-    cout << i << ", ";
-  }
-
+  // {
+  //   cout << assignment[i] << ", ";
+  // }
   cout << endl << "most_liked: " << endl;
   for(auto i : most_liked)
   {
     cout << i << ", ";
   }
 
-  for(int i = 0; i < chairs/2; ++i)
-  {
-    assignment[2*i] = most_liked[i];
-    assignment[2*i+1] = most_unliked[i];
-  }
+  // for(int i = 0; i < chairs/2; ++i)
+  // {
+  //   assignment[2*i] = most_liked[i];
+  //   assignment[2*i+1] = most_unliked[i];
+  // }
   cout << endl;
   // cout << "chairs: " << endl;
   // for(int i = 0; i < chairs; ++i)
@@ -255,8 +309,8 @@ int main(int argc, char** argv)
   // cout << endl;
 
   //int size = most_liked.size();//end() - most_liked;
-  int temp[chairs];
-  sum = findPermutations(most_liked, most_unliked, assignment, temp, chairs, people);
+  //int temp[chairs];
+  //sum = findPermutations(most_liked, most_unliked, assignment, temp, chairs, people);
   //int max = -10000;
 //From stackoverflow to generate time based seed
   // unsigned seed = chrono::system_clock::now().time_since_epoch().count();
@@ -274,7 +328,7 @@ int main(int argc, char** argv)
   //
   // }
 
-  cout << "\nScore is: " << sum << "\n";
+  cout << "\nScore is: " << max << "\n";
 
   // for(int i = 0; i < chairs; ++i)
   // {
