@@ -1,0 +1,1 @@
+Developed for my Artificial Inteligence graduate class, this program determines through random generation the best possible seating arrangement for a group of dinner guests. Points are awarded for mutual likeness between guests and combining guest/host pairs.
